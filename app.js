@@ -19,7 +19,7 @@ platform.on('data', function (requestId, data) {
     if (isPlainObject(data)) {
         async.each(data.coordinates, (coordinate, cb) => {
             if (isNaN(coordinate) || !isNumber(coordinate) || !inRange(coordinate, -180, 180))
-                cb(requestId, new Error(`Invalid coordinates. Coordinates: ${data.coordinates}`));
+                cb(new Error(`Invalid coordinates. Coordinates: ${data.coordinates}`));
             else
                 cb();
 
