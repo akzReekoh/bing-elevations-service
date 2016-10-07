@@ -6,6 +6,7 @@ var platform = require('./platform'),
     isPlainObject = require('lodash.isplainobject'),
     isNumber = require('lodash.isnumber'),
     inRange = require('lodash.inrange'),
+    isEmpty = require('lodash.isempty'),
     async = require('async'),
     get = require('lodash.get'),
     config;
@@ -17,6 +18,9 @@ var _handleException = function (requestId, error) {
 
 platform.on('data', function (requestId, data) {
     if (isPlainObject(data)) {
+        if(isEmpty(get(data, 'coordinates')))
+            return _handleException(requestId, new Error(`Invalid data received. Data should have a coordinates field which contains latitude and longitude.`));
+
         async.each(data.coordinates, (coordinate, cb) => {
             if (isNaN(coordinate) || !isNumber(coordinate) || !inRange(coordinate, -180, 180))
                 cb(new Error(`Invalid coordinates. Coordinates: ${data.coordinates}`));

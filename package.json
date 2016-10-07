@@ -1,5 +1,5 @@
 {
-  "name": "service-plugin-seed",
+  "name": "bing-elevations-service",
   "description": "Bing Maps Elevations Service Plugin for the Reekoh IoT platform. Integrates a Reekoh instance to Bing Maps Elevations API to get elevations of places on Earth based on given coordinates.",
   "version": "1.0.0",
   "author": "Reekoh, Inc.",
@@ -15,6 +15,7 @@
     "async": "^2.0.1",
     "lodash.get": "^4.4.2",
     "lodash.inrange": "^3.3.6",
+    "lodash.isempty": "^4.4.0",
     "lodash.isnan": "^3.0.2",
     "lodash.isnumber": "^3.0.3",
     "lodash.isplainobject": "^4.0.6",
