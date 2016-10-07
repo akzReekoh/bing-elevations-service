@@ -19,41 +19,31 @@ platform.on('data', function (requestId, data) {
     if (isPlainObject(data)) {
         async.each(data.coordinates, (coordinate, cb) => {
             if (isNaN(coordinate) || !isNumber(coordinate) || !inRange(coordinate, -180, 180))
-                 cb(requestId, new Error(`Invalid coordinates. Coordinates: ${data.coordinates}`));
+                cb(requestId, new Error(`Invalid coordinates. Coordinates: ${data.coordinates}`));
             else
                 cb();
 
         }, (error) => {
-            if(error)
+            if (error)
                 return _handleException(requestId, error);
 
             let url = `http://dev.virtualearth.net/REST/v1/Elevation/List?points=${data.coordinates.join(', ')}&heights=sealevel&key=${config.api_key}`;
 
             request.get({
-                url: url
+                url: url,
+                json: true
             }, (err, response, body) => {
-                let d = require('domain').create();
-
-                d.once('error', (dErr) => {
-                    return _handleException(requestId, dErr);
-                });
-
-                d.run(() => {
-                    let respBody = JSON.parse(body);
-
-                    if(err)
-                        return _handleException(requestId, err);
+                if (err)
+                    return _handleException(requestId, err);
 
 
-                    platform.sendResult(requestId, JSON.stringify({result: get(respBody, 'resourceSets[0].resources[0].elevations')}));
+                platform.sendResult(requestId, JSON.stringify({result: get(body, 'resourceSets[0].resources[0].elevations')}));
 
-                    platform.log(JSON.stringify({
-                        title: 'Bing Maps Elevations Service Result',
-                        input: data.coordinates,
-                        result: get(respBody, 'resourceSets[0].resources[0].elevations')
-                    }));
-
-                });
+                platform.log(JSON.stringify({
+                    title: 'Bing Maps Elevations Service Result',
+                    input: data.coordinates,
+                    result: get(body, 'resourceSets[0].resources[0].elevations')
+                }));
             });
         });
     }
